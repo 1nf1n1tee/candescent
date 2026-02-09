@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Candescént</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Rings</a>
+      <a href="#">Necklaces</a>
+      <a href="#">Bracelets</a>
+      <a href="#">Contact</a>
+    </nav>
+  </aside>
+
+  <!-- Header -->
+  <header>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <!-- <h1>Candescént</h1> -->
+    <div class="logo">
+  <img src="assets/images/logo.png" alt="Candescént Logo">
+  <span>Candescént</span>
+</div>
+
+  </header>
+
+  <!-- Carousel -->
+<section class="carousel">
+<div class="carousel-container">
+    <img src="assets/images/carousel/hero-1.jpg" class="carousel-slide active">
+    <img src="assets/images/carousel/hero-2.jpg" class="carousel-slide">
+    <img src="assets/images/carousel/hero-3.png" class="carousel-slide">
+
+    <div class="carousel-dots">
+    <span class="dot active" onclick="goToSlide(0)"></span>
+    <span class="dot" onclick="goToSlide(1)"></span>
+    <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+</div>
+</section>
+
+
+  <!-- Products -->
+  <section class="products">
+    <h2>Featured Collection</h2>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="assets/images/products/ring-1.png">
+        <h3>Diamond Ring</h3>
+        <p>$1,200</p>
+      </div>
+
+      <div class="product-card">
+        <img src="assets/images/products/necklace-1.png">
+        <h3>Gold Necklace</h3>
+        <p>$980</p>
+      </div>
+
+      <div class="product-card">
+        <img src="assets/images/products/bracelet-1.jpg">
+        <h3>Elegant Bracelet</h3>
+        <p>$650</p>
+      </div>
+
+      <div class="product-card">
+        <img src="assets/images/products/ring-2.png">
+        <h3>Platinum Ring</h3>
+        <p>$1,450</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
