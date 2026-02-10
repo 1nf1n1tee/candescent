@@ -2,19 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your Cart</title>
+  <title>Your Cart | Candescént</title>
   <link rel="stylesheet" href="assets/css/cart.css">
 </head>
 <body>
 
-<h1>Your Cart</h1>
+<header class="cart-header">
+  <a href="index.html">← Continue Shopping</a>
+  <h1>Your Cart</h1>
+</header>
 
-<div id="cart-items"></div>
+<main class="cart-container">
+  <section id="cart-items"></section>
 
-<div class="cart-summary">
-  <p>Total: $<span id="cart-total">0</span></p>
-  <button>Proceed to Checkout</button>
-</div>
+  <aside class="cart-summary">
+    <h2>Order Summary</h2>
+    <p>Subtotal <span>$<span id="cart-total">0</span></span></p>
+    <button class="checkout-btn">Proceed to Checkout</button>
+  </aside>
+</main>
 
 <script src="assets/js/cart.js"></script>
 </body>

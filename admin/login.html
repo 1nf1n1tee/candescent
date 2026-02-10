@@ -1,22 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Login</title>
+  <meta charset="UTF-8">
+  <title>Admin Login | Candescént</title>
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
-<body>
+<body class="auth-body">
 
-<h2>Admin Login</h2>
+  <div class="auth-card">
+    <h1>Candescént</h1>
+    <p class="subtitle">Admin Portal</p>
 
-<input type="text" placeholder="Username">
-<input type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+    <form onsubmit="login(event)">
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
 
-<script>
-function login() {
-  window.location.href = "dashboard.html";
-}
-</script>
+  <script>
+    function login(e) {
+      e.preventDefault();
+      // UI-only for now
+      window.location.href = "dashboard.html";
+    }
+  </script>
 
 </body>
 </html>
