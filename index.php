@@ -2,7 +2,11 @@
 include "config/db.php";
 include "header.php";
 
-$result = $conn->query("SELECT * FROM Products ORDER BY created_at DESC");
+$result = $conn->query("SELECT p.*, pi.image_url
+FROM Products p
+LEFT JOIN ProductImages pi ON p.product_id = pi.product_id
+GROUP BY p.product_id;
+");
 ?>
 
 <section class="products">

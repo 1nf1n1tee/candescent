@@ -1,22 +1,31 @@
 <?php
 include "../config/db.php";
 
-$name = $_POST['name'];
-$price = $_POST['price'];
-$desc = $_POST['description'];
-$stock = $_POST['stock'];
-$category = $_POST['category'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-$imageName = time() . "_" . $_FILES['image']['name'];
-$target = "../assets/images/products/" . $imageName;
+    $name     = $_POST['name'];
+    $price    = $_POST['price'];
+    $desc     = $_POST['description'];
+    $stock    = $_POST['stock'];
+    $category = $_POST['category'];
 
-move_uploaded_file($_FILES['image']['tmp_name'], $target);
+    // Image upload
+    $imageName = time() . "_" . basename($_FILES['image']['name']);
+    $imagePath = "/candescent/assets/images/products/" . $imageName;
+    $target    = "../assets/images/products/" . $imageName;
 
-$sql = "INSERT INTO Products 
-(name, description, price, stock_quantity, category, image_url)
-VALUES 
-('$name', '$desc', '$price', '$stock', '$category', 'assets/images/products/$imageName')";
+    move_uploaded_file($_FILES['image']['tmp_name'], $target);
 
-$conn->query($sql);
+    // INSERT PRODUCT (NOW MATCHES DB)
+    $sql = "INSERT INTO Products 
+            (name, description, price, stock_quantity, category, image_url)
+            VALUES 
+            ('$name', '$desc', '$price', '$stock', '$category', '$imagePath')";
 
-header("Location: dashboard.php");
+    if ($conn->query($sql)) {
+        header("Location: dashboard.php?success=1");
+        exit;
+    } else {
+        die("DB ERROR: " . $conn->error);
+    }
+}

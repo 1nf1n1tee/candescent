@@ -1,136 +1,122 @@
 body {
   margin: 0;
-  font-family: "Helvetica Neue", sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background: #f6f6f6;
 }
 
-.admin-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  height: 100vh;
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2.5rem;
 }
 
-.admin-sidebar {
+/* Welcome */
+.welcome {
+  background: linear-gradient(135deg, #f8e7f0, #fff);
+  padding: 2.5rem;
+  border-radius: 14px;
+  margin-bottom: 3rem;
+}
+
+.welcome h1 {
+  font-family: "Georgia", serif;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+}
+
+.welcome p {
+  color: #666;
+}
+
+/* Feature cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.card {
   background: #fff;
-  border-right: 1px solid #eaeaea;
   padding: 2rem;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.admin-sidebar h2 {
-  font-weight: 400;
-  margin-bottom: 2rem;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-.admin-sidebar a {
-  display: block;
-  text-decoration: none;
-  color: #333;
-  margin-bottom: 1rem;
+.card h3 {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
-.admin-main {
+.card p {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Sections */
+.section {
+  background: #fff;
   padding: 2rem;
-  overflow-y: auto;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  margin-bottom: 3rem;
 }
 
-.admin-main h1 {
+.section h3 {
+  margin-bottom: 1.5rem;
   font-weight: 400;
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 0.7rem;
   margin-bottom: 1rem;
-}
-
-.admin-form {
-  display: grid;
-  gap: 1rem;
-  max-width: 400px;
-  margin-bottom: 2rem;
-}
-
-.admin-form input,
-.admin-form textarea {
-  padding: 0.6rem;
   border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.admin-form button {
-  padding: 0.6rem;
-  background: #222;
+button {
+  background: #111;
   color: #fff;
   border: none;
   cursor: pointer;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
 }
 
-table th, table td {
+th, td {
   padding: 0.8rem;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid #eee;
+  text-align: left;
 }
 
-button.danger {
-  background: #c0392b;
-  color: #fff;
-  border: none;
-  padding: 0.4rem 0.6rem;
+th {
+  font-weight: 500;
 }
 
-.carousel-preview {
-  display: flex;
-  gap: 1rem;
+.logout {
+  text-align: right;
+  margin-bottom: 1rem;
 }
 
-.carousel-preview img {
-  width: 180px;
-  height: 100px;
-  object-fit: cover;
-  border: 1px solid #ddd;
-}
-
-/* Admin Login */
-.auth-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #fafafa;
-}
-
-.auth-card {
-  background: #fff;
-  padding: 2.5rem;
-  width: 320px;
-  border: 1px solid #eaeaea;
-  text-align: center;
-}
-
-.auth-card h1 {
-  font-weight: 300;
-  letter-spacing: 2px;
-}
-
-.subtitle {
+.logout a {
   color: #777;
-  margin-bottom: 2rem;
-}
-
-.auth-card form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.auth-card input {
-  padding: 0.7rem;
-  border: 1px solid #ccc;
-}
-
-.auth-card button {
-  padding: 0.7rem;
-  border: none;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
 }
