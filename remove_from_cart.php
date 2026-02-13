@@ -1,7 +1,10 @@
 <?php
-include "config/db.php";
-
-$cart_item_id = $_GET['id'];
-$conn->query("DELETE FROM CartItems WHERE cart_item_id='$cart_item_id'");
-
+session_start();
+$index = $_GET['index'] ?? -1;
+if(isset($_SESSION['cart'][$index])){
+    unset($_SESSION['cart'][$index]);
+    $_SESSION['cart'] = array_values($_SESSION['cart']); // reindex
+}
 header("Location: cart.php");
+exit;
+?>

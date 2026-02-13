@@ -21,14 +21,10 @@ $result = $conn->query("
       <h3><?php echo $row['name']; ?></h3>
       <p>$<?php echo $row['price']; ?></p>
       <button 
-  onclick="event.stopPropagation(); addToCart({
-    id: <?php echo $row['product_id']; ?>,
-    name: '<?php echo htmlspecialchars($row['name'], ENT_QUOTES); ?>',
-    price: <?php echo $row['price']; ?>,
-    image: '<?php echo $row['image_url']; ?>'
-  })">
-  Add to Cart
-</button>
+      onclick="event.stopPropagation(); addToCart('<?php echo $row['product_id']; ?>')">
+      Add to Cart
+     </button>
+
     </div>
   <?php endwhile; ?>
   </div>

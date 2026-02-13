@@ -287,29 +287,108 @@ header h1 {
 }
 
 /* Product's about page */
-.product-detail {
-  padding: 4rem 2rem;
+
+.product-page {
+  padding: 60px 10%;
 }
 
-.product-detail-container {
+.product-container {
   display: flex;
-  gap: 4rem;
-  max-width: 1000px;
-  margin: auto;
+  gap: 60px;
   align-items: center;
 }
 
-.product-detail img {
-  width: 400px;
-  border-radius: 12px;
+.product-image img {
+  width: 450px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
-.product-info h2 {
-  margin-bottom: 1rem;
+.product-info h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
 }
 
-.price {
-  font-size: 1.3rem;
-  color: #c8a44a;
-  margin-bottom: 1rem;
+.product-price {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.product-description {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.add-cart-btn {
+  padding: 14px 30px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+.add-cart-btn:hover {
+  background: #333;
+}
+
+
+/* placing order modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fff;
+  width: 500px;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.checkout-btn,
+.confirm-btn {
+  background: black;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.checkout-btn:hover,
+.confirm-btn:hover {
+  opacity: 0.85;
+}
+
+.close-modal {
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:scale(0.95);}
+  to {opacity:1; transform:scale(1);}
 }

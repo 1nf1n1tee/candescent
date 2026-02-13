@@ -2,11 +2,19 @@
 session_start();
 include "config/db.php";
 
-$product_id = $_POST['id'];
-$quantity = $_POST['quantity'] ?? 1;
+if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+    echo "Invalid product ID";
+    exit;
+}
 
-// Fetch product details from DB
-$result = $conn->query("SELECT * FROM Products WHERE product_id = $product_id");
+$product_id = intval($_POST['id']);
+$quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
+
+// Use prepared statement
+$stmt = $conn->prepare("SELECT * FROM Products WHERE product_id = ?");
+$stmt->bind_param("i", $product_id);
+$stmt->execute();
+$result = $stmt->get_result();
 $product = $result->fetch_assoc();
 
 if(!$product) {
@@ -32,5 +40,5 @@ if(isset($_SESSION['cart'][$product_id])) {
     ];
 }
 
-echo count($_SESSION['cart']); // can be used to update cart badge
+echo count($_SESSION['cart']);
 ?>

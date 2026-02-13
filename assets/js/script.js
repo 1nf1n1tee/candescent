@@ -28,15 +28,46 @@ function toggleSidebar() {
   sidebar.style.left = sidebar.style.left === "0px" ? "-260px" : "0px";
 }
 
-function addToCart(product) {
+function addToCart(productId) {
+  const id = parseInt(productId);
+  if (!id || isNaN(id)) {
+    alert("Invalid product ID");
+    return;
+  }
+
   fetch("add_to_cart.php", {
     method: "POST",
-    headers: {"Content-Type":"application/x-www-form-urlencoded"},
-    body: "id=" + product.id
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "id=" + encodeURIComponent(id) + "&quantity=1"
   })
-  .then(res => res.text())
-  .then(count => {
-    document.getElementById("cart-count").innerText = count;
-    alert("Added to cart");
+  .then(response => response.text())
+  .then(data => {
+    if (data.includes("Invalid") || data.includes("not found")) {
+      alert(data);
+      return;
+    }
+
+    // Update cart badge
+    const cartBadge = document.getElementById("cart-count");
+    if (cartBadge) {
+      cartBadge.innerText = data;
+    }
+
+    alert("✨ Product added to cart!");
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("Something went wrong.");
   });
+}
+
+
+// orde view
+window.onclick = function(event) {
+  const modal = document.getElementById("orderModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
 }

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../config/db.php";
 
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
@@ -86,28 +87,87 @@ $username = $_SESSION['admin'];
 
   <!-- Orders -->
   <section class="section" id="orders">
-    <h3>Orders</h3>
+  <h3>Orders</h3>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Total</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="4" style="text-align:center; color:#777;">
-            Orders will appear here
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Phone</th>
+    <th>Delivery</th>
+    <th>Payment</th>
+    <th>Total</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+  <?php
+  $orders = $conn->query("SELECT * FROM Orders ORDER BY created_at DESC");
+
+  while($order = $orders->fetch_assoc()):
+  ?>
+
+  <tr>
+  <td>#<?php echo $order['order_id']; ?></td>
+  <td><?php echo htmlspecialchars($order['customer_name']); ?></td>
+  <td><?php echo $order['phone_number']; ?></td>
+  <td><?php echo $order['delivery_type']; ?></td>
+  <td><?php echo $order['payment_method']; ?></td>
+  <td>৳<?php echo $order['total_amount']; ?></td>
+
+  <td>
+  <form action="update_order_status.php" method="POST">
+  <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+  <select name="status" onchange="this.form.submit()">
+    <option value="pending" <?php if($order['status']=='pending') echo 'selected'; ?>>Pending</option>
+    <option value="processing" <?php if($order['status']=='processing') echo 'selected'; ?>>Processing</option>
+    <option value="delivered" <?php if($order['status']=='delivered') echo 'selected'; ?>>Delivered</option>
+  </select>
+  </form>
+  </td>
+
+  <td>
+  <button class="view-btn" onclick="openOrderModal(<?php echo $order['order_id']; ?>)">
+View
+</button>
+  <!-- <a href="delete_order.php?id=<?php echo $order['order_id']; ?>" onclick="return confirm('Delete order?')">Delete</a> -->
+  <button class="delete-btn" onclick="if(confirm('Delete order?')) location.href='delete_order.php?id=<?php echo $order['order_id']; ?>'">Delete</button>
+  </td>
+
+  </tr>
+
+  <?php endwhile; ?>
+
+  </tbody>
+  </table>
   </section>
 
 </div>
+<div id="orderModal" class="modal">
+  <div class="modal-content large">
+    <span class="close-modal" onclick="closeOrderModal()">&times;</span>
+    <div id="orderDetails"></div>
+  </div>
+</div>
+
+<script>
+function openOrderModal(id){
+  fetch("get_order_details.php?id=" + id)
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("orderDetails").innerHTML = data;
+    document.getElementById("orderModal").style.display = "flex";
+  });
+}
+
+function closeOrderModal(){
+  document.getElementById("orderModal").style.display = "none";
+}
+</script>
 
 </body>
 </html>

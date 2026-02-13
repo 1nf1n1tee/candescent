@@ -1,3 +1,20 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Cart count
+$cart_count = isset($_SESSION['cart']) ? array_sum(array_column($_SESSION['cart'], 'quantity')) : 0;
+
+// Categories for sidebar
+$categoryResult = $conn->query("SELECT DISTINCT category FROM Products ORDER BY category ASC");
+$categories = [];
+while($row = $categoryResult->fetch_assoc()) {
+    $categories[] = $row['category'];
+}
+?>
+
+
 <!-- cart item number -->
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +42,7 @@
   </nav>
   <div class="header-right">
       <a href="cart.php" class="cart-link">
-        🛒 Cart (<span id="cart-count"><?php echo $cart_count; ?></span>)
+        🛒 Cart (<span id="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>)
       </a>
 
     <a href="admin/login.php" class="admin-link">Admin</a>
