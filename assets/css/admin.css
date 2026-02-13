@@ -110,6 +110,7 @@ th {
   font-weight: 500;
 }
 
+/* logout container */
 .logout {
   text-align: right;
   margin-bottom: 1rem;
@@ -119,4 +120,42 @@ th {
   color: #777;
   text-decoration: none;
   font-size: 14px;
+}
+.logout-btn {
+  display: inline-block;
+  background: #f09696; /* bright red for visibility */
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.25s ease;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}
+
+
+/* login container */
+.auth-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* full viewport height */
+  background: #f6f6f6;
+}
+
+.auth-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  width: 350px; /* fixed width */
+  max-width: 90%;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
 }

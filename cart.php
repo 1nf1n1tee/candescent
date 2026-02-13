@@ -1,63 +1,60 @@
 <?php
 session_start();
 include "config/db.php";
+include "header.php";
 
-if (!isset($_SESSION['session_id'])) {
-    $_SESSION['session_id'] = session_id();
-}
-
-// Fetch or create cart
-$session_id = $_SESSION['session_id'];
-
-$cart = $conn->query("SELECT * FROM Cart WHERE session_id='$session_id'");
-if ($cart->num_rows == 0) {
-    $conn->query("INSERT INTO Cart (session_id) VALUES ('$session_id')");
-    $cart = $conn->query("SELECT * FROM Cart WHERE session_id='$session_id'");
-}
-
-$cart_id = $cart->fetch_assoc()['cart_id'];
-
-// Fetch cart items
-$items = $conn->query("
-    SELECT ci.cart_item_id, ci.quantity, p.name, p.price, p.image_url 
-    FROM CartItems ci
-    JOIN Products p ON ci.product_id = p.product_id
-    WHERE ci.cart_id = $cart_id
-");
+$cart = $_SESSION['cart'] ?? [];
+$total = 0;
 ?>
 
-<?php include "header.php"; ?>
-
 <section class="cart">
-    <h2>Your Cart</h2>
+  <h2>Your Cart</h2>
+
+  <?php if(!$cart): ?>
+    <p>Your cart is empty.</p>
+  <?php else: ?>
     <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php $grand_total = 0; ?>
-            <?php while ($row = $items->fetch_assoc()): ?>
-            <tr>
-                <td><?php echo $row['name']; ?></td>
-                <td><?php echo $row['quantity']; ?></td>
-                <td>$<?php echo $row['price']; ?></td>
-                <td>$<?php echo $row['price'] * $row['quantity']; ?></td>
-                <td>
-                    <a href="remove_from_cart.php?id=<?php echo $row['cart_item_id']; ?>">Remove</a>
-                </td>
-            </tr>
-            <?php $grand_total += $row['price'] * $row['quantity']; ?>
-            <?php endwhile; ?>
-        </tbody>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($cart as $item): 
+          $subtotal = $item['price'] * $item['quantity'];
+          $total += $subtotal;
+        ?>
+          <tr>
+            <td>
+              <img src="assets/images/products/<?php echo $item['image_url']; ?>" 
+                   alt="<?php echo $item['name']; ?>" style="width:50px; height:50px; object-fit:cover;">
+              <?php echo $item['name']; ?>
+            </td>
+            <td>$<?php echo $item['price']; ?></td>
+            <td>
+              <form method="POST" action="update_cart.php">
+                <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1">
+                <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
+                <button type="submit">Update</button>
+              </form>
+            </td>
+            <td>$<?php echo $subtotal; ?></td>
+            <td>
+              <a href="remove_cart.php?id=<?php echo $item['id']; ?>">Remove</a>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
     </table>
-    <h3>Grand Total: $<?php echo $grand_total; ?></h3>
-    <a href="checkout.php"><button>Checkout</button></a>
+
+    <h3>Total: $<?php echo $total; ?></h3>
+
+    <a href="place_order.php" class="btn-place-order">Place Order</a>
+  <?php endif; ?>
 </section>
 
 <?php include "footer.php"; ?>

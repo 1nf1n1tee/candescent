@@ -2,26 +2,35 @@
 session_start();
 include "config/db.php";
 
-$product_id = $_GET['id'];
+$product_id = $_POST['id'];
+$quantity = $_POST['quantity'] ?? 1;
 
-if (!isset($_SESSION['session_id'])) {
-    $_SESSION['session_id'] = session_id();
+// Fetch product details from DB
+$result = $conn->query("SELECT * FROM Products WHERE product_id = $product_id");
+$product = $result->fetch_assoc();
+
+if(!$product) {
+    echo "Product not found";
+    exit;
 }
 
-$session_id = $_SESSION['session_id'];
-$cart = $conn->query("SELECT * FROM Cart WHERE session_id='$session_id'");
-if ($cart->num_rows == 0) {
-    $conn->query("INSERT INTO Cart (session_id) VALUES ('$session_id')");
-    $cart = $conn->query("SELECT * FROM Cart WHERE session_id='$session_id'");
+// Initialize cart if not exists
+if(!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
 }
-$cart_id = $cart->fetch_assoc()['cart_id'];
 
-// Check if product already exists
-$existing = $conn->query("SELECT * FROM CartItems WHERE cart_id='$cart_id' AND product_id='$product_id'");
-if ($existing->num_rows > 0) {
-    $conn->query("UPDATE CartItems SET quantity = quantity + 1 WHERE cart_id='$cart_id' AND product_id='$product_id'");
+// Add or update quantity
+if(isset($_SESSION['cart'][$product_id])) {
+    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
 } else {
-    $conn->query("INSERT INTO CartItems (cart_id, product_id, quantity) VALUES ('$cart_id', '$product_id', 1)");
+    $_SESSION['cart'][$product_id] = [
+        'id' => $product_id,
+        'name' => $product['name'],
+        'price' => $product['price'],
+        'image_url' => $product['image_url'],
+        'quantity' => $quantity
+    ];
 }
 
-header("Location: cart.php");
+echo count($_SESSION['cart']); // can be used to update cart badge
+?>

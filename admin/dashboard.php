@@ -22,8 +22,8 @@ $username = $_SESSION['admin'];
 <div class="container">
 
   <div class="logout">
-    <a href="logout.php">Logout</a>
-  </div>
+  <a href="logout.php" class="logout-btn">Logout</a>
+</div>
 
   <!-- Welcome -->
   <div class="welcome">

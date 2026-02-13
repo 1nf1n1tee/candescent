@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $sql = "INSERT INTO Products 
             (name, description, price, stock_quantity, category, image_url)
             VALUES 
-            ('$name', '$desc', '$price', '$stock', '$category', '$imagePath')";
+            ('$name', '$desc', '$price', '$stock', '$category', '$imageName')";
 
     if ($conn->query($sql)) {
         header("Location: dashboard.php?success=1");

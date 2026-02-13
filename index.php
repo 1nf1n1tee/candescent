@@ -2,25 +2,35 @@
 include "config/db.php";
 include "header.php";
 
-$result = $conn->query("SELECT p.*, pi.image_url
-FROM Products p
-LEFT JOIN ProductImages pi ON p.product_id = pi.product_id
-GROUP BY p.product_id;
+$result = $conn->query("
+    SELECT * FROM Products 
+    ORDER BY created_at DESC
 ");
+
 ?>
 
 <section class="products">
   <h2>Featured Collection</h2>
 
   <div class="product-grid">
-    <?php while ($row = $result->fetch_assoc()): ?>
-      <div class="product-card">
-        <img src="<?php echo $row['image_url']; ?>">
-        <h3><?php echo $row['name']; ?></h3>
-        <p>$<?php echo $row['price']; ?></p>
-        <button onclick="location.href='add_to_cart.php?id=<?php echo $row['product_id']; ?>'">Add to Cart</button>
-      </div>
-    <?php endwhile; ?>
+  <?php while ($row = $result->fetch_assoc()): ?>
+    <div class="product-card"
+     onclick="window.location.href='product.php?id=<?php echo urlencode($row['product_id']); ?>'">
+      <img src="assets/images/products/<?php echo $row['image_url']; ?>" 
+          alt="<?php echo $row['name']; ?>">
+      <h3><?php echo $row['name']; ?></h3>
+      <p>$<?php echo $row['price']; ?></p>
+      <button 
+  onclick="event.stopPropagation(); addToCart({
+    id: <?php echo $row['product_id']; ?>,
+    name: '<?php echo htmlspecialchars($row['name'], ENT_QUOTES); ?>',
+    price: <?php echo $row['price']; ?>,
+    image: '<?php echo $row['image_url']; ?>'
+  })">
+  Add to Cart
+</button>
+    </div>
+  <?php endwhile; ?>
   </div>
 </section>
 

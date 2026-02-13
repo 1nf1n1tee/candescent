@@ -29,16 +29,14 @@ function toggleSidebar() {
 }
 
 function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem("candescent_cart")) || [];
-
-  const existing = cart.find(item => item.id === product.id);
-
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-
-  localStorage.setItem("candescent_cart", JSON.stringify(cart));
-  alert("Added to cart");
+  fetch("add_to_cart.php", {
+    method: "POST",
+    headers: {"Content-Type":"application/x-www-form-urlencoded"},
+    body: "id=" + product.id
+  })
+  .then(res => res.text())
+  .then(count => {
+    document.getElementById("cart-count").innerText = count;
+    alert("Added to cart");
+  });
 }
