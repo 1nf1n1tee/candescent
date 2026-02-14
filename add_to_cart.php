@@ -29,8 +29,23 @@ if(!isset($_SESSION['cart'])) {
 
 // Add or update quantity
 if(isset($_SESSION['cart'][$product_id])) {
-    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+
+    $newQty = $_SESSION['cart'][$product_id]['quantity'] + $quantity;
+
+    if ($newQty > $product['stock_quantity']) {
+        echo "Not enough stock available";
+        exit;
+    }
+
+    $_SESSION['cart'][$product_id]['quantity'] = $newQty;
+
 } else {
+
+    if ($quantity > $product['stock_quantity']) {
+        echo "Not enough stock available";
+        exit;
+    }
+
     $_SESSION['cart'][$product_id] = [
         'id' => $product_id,
         'name' => $product['name'],

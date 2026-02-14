@@ -163,54 +163,75 @@ header h1 {
 
 /* Carousel */
 .carousel {
-  width: 100%;
-  height: 60vh;
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 75vh; /* Elegant large hero */
+    max-height: 650px;
+    overflow: hidden;
 }
 
-.carousel-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
+.slides {
+    display: flex;
+    height: 100%;
+    transition: transform 0.8s ease-in-out;
 }
 
-.carousel-slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+.slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
 }
 
-.carousel-slide.active {
-  opacity: 1;
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* FIXES positioning */
+    object-position: center; /* Centers jewellery */
+}
+
+/* Elegant gradient overlay */
+.slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+}
+
+/* Caption Styling */
+.caption {
+    position: absolute;
+    bottom: 15%;
+    left: 8%;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 300;
+    z-index: 2;
+    max-width: 500px;
 }
 
 /* Dots */
-.carousel-dots {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
+.dots {
+    position: absolute;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+    z-index: 3;
 }
 
-.dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin: 0 6px;
-  background: transparent;
-  border: 1.5px solid #999;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.dots span {
+    height: 12px;
+    width: 12px;
+    margin: 0 6px;
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.dot.active {
-  background: #c8a44a;      /* muted gold */
-  border-color: #c8a44a;
+.dots .active {
+    background-color: #ffffff;
+    transform: scale(1.2);
 }
 
 
@@ -268,6 +289,14 @@ header h1 {
   color: #c8a44a;
   margin-bottom: 1.2rem;
 }
+
+/* stock management */
+
+.out-stock-btn {
+  background: #999;
+  cursor: not-allowed;
+}
+
 /*comment add to cart button*/
 
 .product-card button {

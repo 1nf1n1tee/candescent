@@ -18,9 +18,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $payment = $_POST['payment'];
 
     $total = 0;
+
     foreach($cart as $item){
+
+        // Fetch current stock from DB
+        $checkStock = $conn->prepare("SELECT stock_quantity FROM Products WHERE product_id = ?");
+        $checkStock->bind_param("i", $item['id']);
+        $checkStock->execute();
+        $resultStock = $checkStock->get_result();
+        $productData = $resultStock->fetch_assoc();
+
+        if (!$productData || $productData['stock_quantity'] < $item['quantity']) {
+            die("One of the products is out of stock or insufficient quantity.");
+        }
+
         $total += $item['price'] * $item['quantity'];
     }
+
 
     $stmt = $conn->prepare("
         INSERT INTO Orders 
@@ -48,6 +62,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     ");
 
     foreach($cart as $item){
+
+        // Insert order item
         $stmt2->bind_param("iiid", 
             $order_id, 
             $item['id'], 
@@ -55,6 +71,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $item['price']
         );
         $stmt2->execute();
+
+        // Reduce stock
+        $updateStock = $conn->prepare("UPDATE Products SET stock_quantity = stock_quantity - ? WHERE product_id = ?");
+        $updateStock->bind_param("ii", $item['quantity'], $item['id']);
+        $updateStock->execute();
     }
 
     unset($_SESSION['cart']);
