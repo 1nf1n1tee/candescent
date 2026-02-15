@@ -36,47 +36,58 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 
 
-    $stmt = $conn->prepare("
-        INSERT INTO Orders 
-        (customer_name, phone_number, customer_email, delivery_type, shipping_address, payment_method, total_amount, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
-    ");
-
-    $stmt->bind_param("ssssssd", 
-        $name, 
-        $phone, 
-        $email, 
-        $delivery, 
-        $address, 
-        $payment, 
-        $total
-    );
-
-    $stmt->execute();
-    $order_id = $stmt->insert_id;
-
-    // Insert order items
+    // Prepare once
     $stmt2 = $conn->prepare("
-        INSERT INTO OrderItems (order_id, product_id, quantity, price)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO OrderItems 
+        (order_id, product_id, product_name, quantity, price)
+        VALUES (?, ?, ?, ?, ?)
     ");
 
     foreach($cart as $item){
 
-        // Insert order item
-        $stmt2->bind_param("iiid", 
-            $order_id, 
-            $item['id'], 
-            $item['quantity'], 
-            $item['price']
+        // Fetch product snapshot from DB
+        $productStmt = $conn->prepare("
+            SELECT name, price, stock_quantity 
+            FROM Products 
+            WHERE product_id = ?
+        ");
+        $productStmt->bind_param("i", $item['id']);
+        $productStmt->execute();
+        $product = $productStmt->get_result()->fetch_assoc();
+
+        if(!$product){
+            die("Product not found.");
+        }
+
+        if($product['stock_quantity'] < $item['quantity']){
+            die("Insufficient stock.");
+        }
+
+        $product_name  = $product['name'];
+        $product_price = $product['price'];
+        $quantity      = $item['quantity'];
+
+        // Insert order item (snapshot)
+        $stmt2->bind_param(
+            "iisid",
+            $order_id,
+            $item['id'],
+            $product_name,
+            $quantity,
+            $product_price
         );
         $stmt2->execute();
 
         // Reduce stock
-        $updateStock = $conn->prepare("UPDATE Products SET stock_quantity = stock_quantity - ? WHERE product_id = ?");
-        $updateStock->bind_param("ii", $item['quantity'], $item['id']);
+        $updateStock = $conn->prepare("
+            UPDATE Products 
+            SET stock_quantity = stock_quantity - ? 
+            WHERE product_id = ?
+        ");
+        $updateStock->bind_param("ii", $quantity, $item['id']);
         $updateStock->execute();
     }
+
 
     unset($_SESSION['cart']);
 

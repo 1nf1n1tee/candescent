@@ -90,7 +90,7 @@ $username = $_SESSION['admin'];
             <td><?php echo $product['stock_quantity']; ?></td>
             <td><?php echo htmlspecialchars($product['category']); ?></td>
             <td>
-              <button class="edit-btn" onclick="openProductModal(<?php echo $product['product_id']; ?>)">Edit</button>
+              <button class="edit-btn action-btn" onclick="openProductModal(<?php echo $product['product_id']; ?>)">Edit</button>
               <a class="delete-link" href="delete_product.php?id=<?php echo $product['product_id']; ?>" onclick="return confirm('Delete this product?')">Delete</a>
             </td>
           </tr>
@@ -131,7 +131,7 @@ $username = $_SESSION['admin'];
             <td><?php echo htmlspecialchars($slide['caption']); ?></td>
             <td><?php echo $slide['sort_order']; ?></td>
             <td>
-              <button class="edit-btn" onclick="openCarouselModal(<?php echo $slide['carousel_id']; ?>)">Edit</button>
+              <button class="edit-btn action-btn" onclick="openCarouselModal(<?php echo $slide['carousel_id']; ?>)">Edit</button>
               <a class="delete-link" href="delete_carousel.php?id=<?php echo $slide['carousel_id']; ?>" onclick="return confirm('Delete this slide?')">Delete</a>
             </td>
           </tr>
@@ -179,7 +179,7 @@ $username = $_SESSION['admin'];
               </form>
             </td>
             <td>
-              <button class="edit-btn" onclick="openOrderModal(<?php echo $order['order_id']; ?>)">View</button>
+              <button class="view-btn action-btn" onclick="openOrderModal(<?php echo $order['order_id']; ?>)">View</button>
               <a class="delete-link" href="delete_order.php?id=<?php echo $order['order_id']; ?>" onclick="return confirm('Delete order?')">Delete</a>
             </td>
           </tr>
@@ -194,12 +194,82 @@ $username = $_SESSION['admin'];
 <!-- MODALS -->
 <div id="productModal" class="modal"><div class="modal-content" id="productForm"></div></div>
 <div id="carouselModal" class="modal"><div class="modal-content" id="carouselForm"></div></div>
+<div id="orderModal" class="modal">
+<div class="modal-content" id="orderForm"></div>
+</div>
 
 <script>
-// Modal functions
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ---------- PRODUCT MODAL ----------
+function openProductModal(id) {
+  fetch("edit_product.php?id=" + id)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("productForm").innerHTML = data;
+      document.getElementById("productModal").style.display = "flex";
+    });
+}
+
+// ---------- CAROUSEL MODAL ----------
+function openCarouselModal(id) {
+  fetch("edit_carousel.php?id=" + id)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("carouselForm").innerHTML = data;
+      document.getElementById("carouselModal").style.display = "flex";
+
+      // Attach submit handler AFTER form loads
+      const form = document.getElementById("carouselEditForm");
+
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let formData = new FormData(form);
+
+        fetch("edit_carousel.php", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.text())
+        .then(result => {
+          console.log(result);
+
+          if(result.trim() === "success"){
+            window.location.reload();
+          } else {
+            alert("Update failed: " + result);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Something went wrong.");
+        });
+      });
+    });
+}
+
+// ---------- ORDER MODAL ----------
+
+
+function openOrderModal(id) {
+  fetch("view_order.php?id=" + id)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("orderForm").innerHTML = data;
+      document.getElementById("orderModal").style.display = "flex";
+    })
+    .catch(error => console.error(error));
+}
+
+// ---------- CLOSE MODAL WHEN CLICK OUTSIDE ----------
+window.onclick = function(event) {
+  if (event.target.classList.contains("modal")) {
+    event.target.style.display = "none";
+  }
+};
+
 </script>
+
 
 </body>
 </html>

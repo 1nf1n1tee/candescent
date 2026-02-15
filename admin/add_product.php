@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         VALUES (?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssdiis",
+    $stmt->bind_param("ssdiss",
         $name,
         $desc,
         $price,
@@ -30,6 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     );
 
     $stmt->execute();
+    if(!$stmt->execute()){
+    die("SQL Error: " . $stmt->error);
+}
 
     header("Location: dashboard.php#manage-products");
     exit;

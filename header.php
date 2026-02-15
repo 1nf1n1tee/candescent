@@ -39,13 +39,12 @@ while($row = $categoryResult->fetch_assoc()) {
     <a href="index.php">Home</a>
     <a href="#">Collections</a>
     <a href="#">Contact</a>
+    <a href="admin/login.php" class="admin-link">Admin</a>
   </nav>
   <div class="header-right">
       <a href="cart.php" class="cart-link">
         🛒 Cart (<span id="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>)
       </a>
-
-    <a href="admin/login.php" class="admin-link">Admin</a>
   </div>
 </header>
 

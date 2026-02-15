@@ -1,10 +1,34 @@
 <?php
 include "../config/db.php";
 
-$id = $_GET['id'];
+/* ---------------- FETCH PRODUCT FOR MODAL ---------------- */
+
+if ($_SERVER["REQUEST_METHOD"] === "GET") {
+
+    if (!isset($_GET['id']) || empty($_GET['id'])) {
+        echo "<p>Invalid product ID.</p>";
+        exit;
+    }
+
+    $id = intval($_GET['id']);
+
+    $stmt = $conn->prepare("SELECT * FROM Products WHERE product_id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $product = $result->fetch_assoc();
+
+    if (!$product) {
+        echo "<p>Product not found.</p>";
+        exit;
+    }
+}
+
+/* ---------------- UPDATE PRODUCT ---------------- */
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
+    $id       = intval($_POST['product_id']);
     $name     = $_POST['name'];
     $price    = $_POST['price'];
     $desc     = $_POST['description'];
@@ -35,23 +59,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             WHERE product_id=?
         ");
 
-        $stmt->bind_param("ssdiis",
+        $stmt->bind_param("ssdiii",
             $name, $desc, $price, $stock, $category, $id
         );
     }
 
     $stmt->execute();
-    header("Location: dashboard.php#manage-products");
-    exit;
+    if(!$stmt->execute()){
+    die("Update failed: " . $stmt->error);
 }
 
-$stmt = $conn->prepare("SELECT * FROM Products WHERE product_id=?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$product = $stmt->get_result()->fetch_assoc();
+
+    echo "<script>window.location.reload();</script>";
+    exit;
+}
 ?>
 
 <form method="POST" enctype="multipart/form-data">
+
+<input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+
 <h3>Edit Product</h3>
 
 <img src="../assets/images/products/<?php echo $product['image_url']; ?>" width="150"><br><br>
@@ -66,4 +93,5 @@ $product = $stmt->get_result()->fetch_assoc();
 <input type="file" name="image">
 
 <button type="submit">Update Product</button>
+
 </form>

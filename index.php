@@ -39,7 +39,7 @@ $result = $conn->query("
       <img src="assets/images/products/<?php echo $row['image_url']; ?>" 
           alt="<?php echo $row['name']; ?>">
       <h3><?php echo $row['name']; ?></h3>
-      <p>$<?php echo $row['price']; ?></p>
+      <p>৳<?php echo $row['price']; ?></p>
       <?php if ($row['stock_quantity'] > 0): ?>
       <button 
       onclick="event.stopPropagation(); addToCart('<?php echo $row['product_id']; ?>')">
