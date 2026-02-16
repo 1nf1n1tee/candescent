@@ -11,39 +11,58 @@ foreach($cart as $item){
 
 <?php include "header.php"; ?>
 
+<!-- order placed popup -->
+
+<?php if(isset($_GET['id'])): ?>
+<div class="order-success">
+  Order placed successfully! Thank you for shopping with us.
+</div>
+<script>
+setTimeout(function(){
+    document.querySelector(".order-success").style.display = "none";
+}, 4000);
+</script>
+<?php endif; ?>
+
+
 <section class="cart">
-  <h2>Your Cart</h2>
-  <?php if(empty($cart)): ?>
-      <p>Your cart is empty.</p>
-  <?php else: ?>
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Subtotal</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach($cart as $index => $item): ?>
+  <div class="cart-container">
+    <h2>Your Cart</h2>
+    <?php if(empty($cart)): ?>
+        <p>Your cart is empty.</p>
+    <?php else: ?>
+        <table>
+          <thead>
             <tr>
-              <td><?php echo htmlspecialchars($item['name']); ?></td>
-              <td><?php echo $item['quantity']; ?></td>
-              <td>$<?php echo $item['price']; ?></td>
-              <td>$<?php echo $item['price'] * $item['quantity']; ?></td>
-              <td>
-                <a href="remove_from_cart.php?index=<?php echo $index; ?>">Remove</a>
-              </td>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Subtotal</th>
+              <th>Action</th>
             </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-      <h3>Total: $<?php echo $total; ?></h3>
-        <button onclick="openCheckout()" class="checkout-btn">Proceed to Checkout</button>
-      </form>
-  <?php endif; ?>
+          </thead>
+          <tbody>
+            <?php foreach($cart as $index => $item): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($item['name']); ?></td>
+                <td><?php echo $item['quantity']; ?></td>
+                <td>৳<?php echo $item['price']; ?></td>
+                <td>৳<?php echo $item['price'] * $item['quantity']; ?></td>
+                <td>
+                  <a href="remove_from_cart.php?index=<?php echo $index; ?>">Remove</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+        <hr>
+        <h3>Subtotal: ৳<?php echo $total; ?></h3>
+          <button onclick="openCheckout()" class="checkout-btn">Proceed to Checkout</button>
+        </form>
+    <?php endif; ?>
+  </div>
+</section>
+
 </section>
 
 <!-- Checkout Modal -->

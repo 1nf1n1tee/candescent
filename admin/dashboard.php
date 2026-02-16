@@ -159,6 +159,8 @@ $username = $_SESSION['admin'];
         <tbody>
           <?php
           $orders = $conn->query("SELECT * FROM Orders ORDER BY created_at DESC");
+          // $deliverycharge = $conn->query("SELECT * FROM deliverycharges WHERE type = $orders[delivery_type]");
+          // $total  = $orders["total_amount"] + $deliverycharge["charge"];
           while($order = $orders->fetch_assoc()):
           ?>
           <tr>
@@ -168,6 +170,7 @@ $username = $_SESSION['admin'];
             <td><?php echo $order['delivery_type']; ?></td>
             <td><?php echo $order['payment_method']; ?></td>
             <td>৳<?php echo $order['total_amount']; ?></td>
+            
             <td>
               <form action="update_order_status.php" method="POST">
                 <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
