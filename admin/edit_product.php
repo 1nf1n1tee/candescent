@@ -26,16 +26,16 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
 /* ---------------- UPDATE PRODUCT ---------------- */
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $id       = intval($_POST['product_id']);
-    $name     = $_POST['name'];
-    $price    = $_POST['price'];
-    $desc     = $_POST['description'];
-    $stock    = $_POST['stock'];
-    $category = $_POST['category'];
+        $id       = intval($_POST['product_id']);
+        $name     = $_POST['name'];
+        $price    = $_POST['price'];
+        $desc     = $_POST['description'];
+        $stock    = $_POST['stock'];
+        $category = $_POST['category'];
 
-    if (!empty($_FILES['image']['name'])) {
+        if (!empty($_FILES['image']['name'])) {
 
         $imageName = time() . "_" . basename($_FILES['image']['name']);
         $target = "../assets/images/products/" . $imageName;
@@ -47,8 +47,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             WHERE product_id=?
         ");
 
-        $stmt->bind_param("ssdiisi",
-            $name, $desc, $price, $stock, $category, $imageName, $id
+        // Bind category as string ('s') instead of integer
+        $stmt->bind_param("ssdisss",
+            $name,       // s
+            $desc,       // s
+            $price,      // d
+            $stock,      // i
+            $category,   // s
+            $imageName,  // s
+            $id          // s
         );
 
     } else {
@@ -59,23 +66,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             WHERE product_id=?
         ");
 
-        $stmt->bind_param("ssdiii",
-            $name, $desc, $price, $stock, $category, $id
+        $stmt->bind_param("ssdiss",
+            $name,       // s
+            $desc,       // s
+            $price,      // d
+            $stock,      // i
+            $category,   // s
+            $id          // s
         );
     }
 
-    $stmt->execute();
     if(!$stmt->execute()){
-    die("Update failed: " . $stmt->error);
-}
+        echo "error: " . $stmt->error;
+    } else {
+        echo "success";
+    }
 
-
-    echo "<script>window.location.reload();</script>";
     exit;
 }
+
 ?>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" id="productEditForm">
 
 <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
 

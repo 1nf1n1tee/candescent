@@ -207,9 +207,36 @@ function openProductModal(id) {
     .then(data => {
       document.getElementById("productForm").innerHTML = data;
       document.getElementById("productModal").style.display = "flex";
+
+      const form = document.getElementById("productEditForm");
+
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let formData = new FormData(form);
+
+        fetch("edit_product.php", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.text())
+        .then(result => {
+          console.log(result);
+
+          if(result.trim() === "success"){
+            window.location.reload();
+          } else {
+            alert("Update failed: " + result);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Something went wrong.");
+        });
+      });
+
     });
 }
-
 // ---------- CAROUSEL MODAL ----------
 function openCarouselModal(id) {
   fetch("edit_carousel.php?id=" + id)

@@ -3,52 +3,69 @@ include "../config/db.php";
 
 $id = intval($_GET['id']);
 
-$orderStmt = $conn->prepare("SELECT * FROM Orders WHERE order_id=?");
+/* ==============================
+   1️⃣ FETCH ORDER
+============================== */
+
+$orderStmt = $conn->prepare("SELECT * FROM Orders WHERE order_id = ?");
 $orderStmt->bind_param("i", $id);
 $orderStmt->execute();
 $order = $orderStmt->get_result()->fetch_assoc();
-$subtotal = 0;
+
+if(!$order){
+    die("Order not found.");
+}
+
+/* ==============================
+   2️⃣ FETCH DELIVERY CHARGE FROM deliverycharges TABLE
+============================== */
+
+$deliveryStmt = $conn->prepare("
+    SELECT charge 
+    FROM deliverycharges 
+    WHERE type = ?
+");
+
+$deliveryStmt->bind_param("s", $order['delivery_type']);
+$deliveryStmt->execute();
+$deliveryResult = $deliveryStmt->get_result()->fetch_assoc();
+
+$deliveryCharge = $deliveryResult ? $deliveryResult['charge'] : 0;
+
+/* ==============================
+   3️⃣ FETCH ORDER ITEMS
+============================== */
 
 $itemsStmt = $conn->prepare("
-    SELECT oi.*, p.name 
-    FROM OrderItems oi
-    JOIN Products p ON oi.product_id = p.product_id
-    WHERE oi.order_id=?
+    SELECT product_name, quantity, price 
+    FROM OrderItems
+    WHERE order_id = ?
 ");
 $itemsStmt->bind_param("i", $id);
 $itemsStmt->execute();
 $items = $itemsStmt->get_result();
+
+/* ==============================
+   4️⃣ CALCULATE SUBTOTAL
+============================== */
+
+$subtotal = 0;
+$itemsArray = [];
 
 while($row = $items->fetch_assoc()){
     $subtotal += $row['price'] * $row['quantity'];
     $itemsArray[] = $row;
 }
 
-$deliveryCharge = 0;
-
-if($order['delivery_type'] === 'inside_dhaka'){
-    $deliveryCharge = 60;
-} elseif($order['delivery_type'] === 'outside_dhaka'){
-    $deliveryCharge = 120;
-}
-
-$itemsStmt = $conn->prepare("
-    SELECT oi.*, p.name 
-    FROM OrderItems oi
-    JOIN Products p ON oi.product_id = p.product_id
-    WHERE oi.order_id=?
-");
-$itemsStmt->bind_param("i", $id);
-$itemsStmt->execute();
-$items = $itemsStmt->get_result();
+$grandTotal = $subtotal + $deliveryCharge;
 ?>
 
 <h2>Invoice #<?php echo $order['order_id']; ?></h2>
 
 <p><strong>Customer:</strong> <?php echo htmlspecialchars($order['customer_name']); ?></p>
-<p><strong>Phone:</strong> <?php echo $order['phone_number']; ?></p>
-<p><strong>Delivery:</strong> <?php echo $order['delivery_type']; ?></p>
-<p><strong>Payment:</strong> <?php echo $order['payment_method']; ?></p>
+<p><strong>Phone:</strong> <?php echo htmlspecialchars($order['phone_number']); ?></p>
+<p><strong>Delivery:</strong> <?php echo htmlspecialchars($order['delivery_type']); ?></p>
+<p><strong>Payment:</strong> <?php echo htmlspecialchars($order['payment_method']); ?></p>
 
 <hr>
 
@@ -59,29 +76,29 @@ $items = $itemsStmt->get_result();
   <th align="right">Price</th>
 </tr>
 
-<?php while($item = $items->fetch_assoc()): ?>
+<?php foreach($itemsArray as $item): ?>
 <tr>
-  <td><?php echo $item['name']; ?></td>
+  <td><?php echo htmlspecialchars($item['product_name']); ?></td>
   <td align="center"><?php echo $item['quantity']; ?></td>
-  <td align="right">৳<?php echo $item['price']; ?></td>
+  <td align="right">৳<?php echo number_format($item['price'], 2); ?></td>
 </tr>
-<?php endwhile; ?>
+<?php endforeach; ?>
 
 </table>
 
 <hr>
 
-<h4>Subtotal: ৳<?php echo $subtotal; ?></h4>
-<h4>Delivery: ৳<?php echo $deliveryCharge; ?></h4>
+<h4>Subtotal: ৳<?php echo number_format($subtotal, 2); ?></h4>
+<h4>Delivery: ৳<?php echo number_format($deliveryCharge, 2); ?></h4>
 
 <hr>
 
-<h3>Total: ৳<?php echo $subtotal + $deliveryCharge; ?></h3>
-
+<h3>Total: ৳<?php echo number_format($grandTotal, 2); ?></h3>
 
 <br>
 
-<button class="invoice-btn" onclick="window.open('download_invoice.php?id=<?php echo $order['order_id']; ?>')">
+<button class="invoice-btn"
+onclick="window.open('download_invoice.php?id=<?php echo $order['order_id']; ?>')">
 Download Invoice (PDF)
 </button>
 

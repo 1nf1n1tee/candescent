@@ -93,7 +93,7 @@ function autoSlide(){
 }
 
 updateCarousel();
-setInterval(autoSlide, 4000);
+setInterval(autoSlide, 3000);
 </script>
 
 <?php include "footer.php"; ?>
